@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -13,32 +13,41 @@ export class UsersService {
   ) {}
 
   findAll(): Promise<User[]> {
-    console.log('findAll')
     return this.usersRepository.find();
   }
 
-  findOne(id: string): Promise<User> {
-    console.log(id)
-    return this.usersRepository.findOneBy({
-      userID: id
+  async findOne(id: string): Promise<User> {
+    console.log(id);
+    const user = await this.usersRepository.findOneBy({
+      userID: id,
     });
+
+    if (user) {
+      return user;
+    }
+    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  async create(user:CreateUserDTO) {
-    await this.usersRepository.save(user)
+  async create(user: CreateUserDTO) {
+    await this.usersRepository.save(user);
   }
 
-  async update(id:string, user:UpdateUserDTO) {
-    const prevUser = await this.usersRepository.findOne({
-      where: {
-        userID: id
-      }
-    })
-    let usersToUpdate = {...prevUser, ...user}
-    await this.usersRepository.save(usersToUpdate)
+  async update(id: string, user: UpdateUserDTO) {
+    const prevUser = await this.usersRepository.findOneBy({
+      userID: id,
+    });
+    if(prevUser) {
+      let usersToUpdate = { ...prevUser, ...user };
+      await this.usersRepository.save(usersToUpdate);
+    }
   }
 
-  async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
+  async remove(id: string): Promise<Object> {
+    console.log(id)
+    const deletedUser = await this.usersRepository.delete({userID: id})
+    if(!deletedUser.affected) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return {deleted: true};
   }
 }
