@@ -11,7 +11,8 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { User } from './entities/users.entity';
 import { UsersService } from './users.service';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+// import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -28,15 +29,15 @@ export class UsersController {
   }
 
   @Post()
-  @ApiOperation({summary:'유저 생성 API', description: '유저를 생성한다.'})
-  @ApiCreatedResponse({description:'유저 생성', type: User})
+  @ApiOperation({ summary: '유저 생성 API', description: '유저를 생성한다.' })
+  @ApiCreatedResponse({ description: '유저 생성', type: User })
   CreateUser(@Body() user: CreateUserDTO) {
     console.log(user);
     return this.usersService.create(user);
   }
 
   @Delete(':id')
-  removeOne(@Param('id') id: string): Promise<Object> {
+  removeOne(@Param('id') id: string): Promise<boolean> {
     return this.usersService.remove(id);
   }
 

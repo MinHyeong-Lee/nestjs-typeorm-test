@@ -83,8 +83,8 @@
   },
   "lint-staged": {
     "**/*.{js,ts,tsx}": [
-      "eslint",
-      "prettier --check"
+      "prettier --check",
+      "eslint"
     ],
     "**/*.{json,yaml,md}": [
       "prettier --check"

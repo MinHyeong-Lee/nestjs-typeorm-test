@@ -37,17 +37,17 @@ export class UsersService {
       userID: id,
     });
     if (prevUser) {
-      let usersToUpdate = { ...prevUser, ...user };
+      const usersToUpdate = { ...prevUser, ...user };
       await this.usersRepository.save(usersToUpdate);
     }
   }
 
-  async remove(id: string): Promise<Object> {
+  async remove(id: string): Promise<boolean> {
     console.log(id);
     const deletedUser = await this.usersRepository.delete({ userID: id });
     if (!deletedUser.affected) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    return { deleted: true };
+    return true;
   }
 }
