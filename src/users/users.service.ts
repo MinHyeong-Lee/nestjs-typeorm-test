@@ -36,18 +36,18 @@ export class UsersService {
     const prevUser = await this.usersRepository.findOneBy({
       userID: id,
     });
-    if(prevUser) {
+    if (prevUser) {
       let usersToUpdate = { ...prevUser, ...user };
       await this.usersRepository.save(usersToUpdate);
     }
   }
 
   async remove(id: string): Promise<Object> {
-    console.log(id)
-    const deletedUser = await this.usersRepository.delete({userID: id})
-    if(!deletedUser.affected) {
+    console.log(id);
+    const deletedUser = await this.usersRepository.delete({ userID: id });
+    if (!deletedUser.affected) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    return {deleted: true};
+    return { deleted: true };
   }
 }
